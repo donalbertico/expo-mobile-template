@@ -3,14 +3,15 @@ import firebase from 'firebase'
 
 import {styles} from '../../styles'
 import {Input,Text,Button} from 'react-native-elements'
-import {View, TouchableOpacity} from 'react-native'
+import {View, TouchableOpacity,ActivityIndicator} from 'react-native'
 
 
-export default function Login({handleToRegister,handleToLoading,handleToHome}) {
+export default function Login({handleToRegister}) {
 
   const [email, setEmail] = React.useState('')
   const [password, setPass] = React.useState('')
   const [loading, setLoading] = React.useState(false)
+  const [error,setError] = React.useState('')
 
   handleLogin = () => {
     setLoading(true)
@@ -18,11 +19,13 @@ export default function Login({handleToRegister,handleToLoading,handleToHome}) {
         .auth()
         .signInWithEmailAndPassword(email,password)
         .then(() => {
-          handleToHome()
-          setLoading(false)  
+          setLoading(false)
         })
-        .catch((err) => {
-          console.warn(err);
+        .catch((e) => {
+          console.warn(e);
+          setError(e.message)
+          setLoading(false)
+
         })
   }
 
@@ -30,16 +33,21 @@ export default function Login({handleToRegister,handleToLoading,handleToHome}) {
     return (
       <View style={styles.horizontalView}>
         <View style={{flex:1}}></View>
-        <View style={{flex:5}}>
-          <Input placeholder = 'Email' value={email} onChangeText={email => setEmail(email)}/>
-          <Input placeholder = 'Password' value={password} onChangeText={password => setPass(password)}/>
-          <View style={styles.horizontal}>
-            <Button title='login' onPress={handleLogin}/>
-            <TouchableOpacity onPress={()=>handleToRegister()}>
-              <Text>register</Text>
-            </TouchableOpacity>
+        {loading?(
+          <ActivityIndicator/>
+        ):(
+          <View style={{flex:5}}>
+            <Text>{error}</Text>
+            <Input placeholder = 'Email' value={email} onChangeText={email => setEmail(email)}/>
+            <Input placeholder = 'Password' value={password} onChangeText={password => setPass(password)}/>
+            <View style={styles.horizontal}>
+              <Button title='login' onPress={handleLogin}/>
+              <TouchableOpacity onPress={()=>handleToRegister()}>
+                <Text>register</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        )}
         <View style={{flex:1}}></View>
       </View>
     )

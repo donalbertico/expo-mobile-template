@@ -12,35 +12,52 @@ export default function RegisterScreen(props){
   const db = firebase.firestore();
 
   const [email,setEmail] = React.useState('')
+  const [error,setError] = React.useState('')
   const [password,setPass] = React.useState('')
+  const [repeat,setRepeat] = React.useState('')
   const [name,setName] = React.useState('')
   const [loading,setLoading] = React.useState(false)
   const [setUser] = useUserStore()
 
   handleRegister = ()=> {
+
+    if(password != repeat){
+      setError('passwords must match')
+      // return;
+    }
     setLoading(true)
+    const user = {
+      uid : '00cheat00',
+      email : email,
+      displayName : name,
+      description : 'provisional'
+    }
     firebase
         .auth()
         .createUserWithEmailAndPassword(email,password)
         .then(credentials => {
-          const user = {
-            uid : credentials.user.uid,
-            email : email,
-            name : name
-          }
-          db.collection('users').doc(user.uid).set({
-            name:name
-          })
-          .then(()=>{
-            setUser(user)
-            props.navigation.navigate('home',{userUpdate : true})
-            setLoading(false)
-          })
-        })
-        .catch((e) => {
-          console.warn(e);
-          props.navigation.goBack()
-        })
+          user.uid = credentials.user.uid
+          credentials.user.updateProfile({
+                displayName : name
+              })
+              .then(()=>{
+                db.collection('users').doc(user.uid).set({
+                      description:'empty'
+                    })
+                    .then(()=>{
+                      setUser(user)
+                      setLoading(false)
+                    })
+                  })
+                  .catch((e) => {
+                    console.warn(e);
+                    setLoading(false)
+                  })
+              },(e)=>{
+                console.warn(e)
+                setLoading(false)
+                setError(e.message)
+              })
   }
 
   return(
@@ -48,10 +65,11 @@ export default function RegisterScreen(props){
       <View style={{flex:1}}></View>
       {!loading? (
         <View style={styles.alignCentered,{flex:2}}>
+          <Text>{error}</Text>
           <Input placeholder='name'onChangeText={(name)=>setName(name)}></Input>
           <Input placeholder='email'onChangeText={(email)=>setEmail(email)}></Input>
           <Input placeholder='password' value={password} onChangeText={(password)=>setPass(password)}></Input>
-          <Input placeholder='repeat password'></Input>
+          <Input placeholder='repeat password' value={repeat} onChangeText={(repeat)=>setRepeat(repeat)}></Input>
           <Button title='register'onPress={handleRegister}/>
         </View>
       ):(

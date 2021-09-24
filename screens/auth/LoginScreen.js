@@ -6,15 +6,14 @@ import { Text } from 'react-native-elements'
 
 import Login from "./components/loginComponent"
 
+
 export default function LoginScreen(props){
 
   return(
     <View style={styles.container}>
       <View style={{flex:1}}></View>
       <View style={{flex:2}}>
-        <Login handleToRegister={()=>props.navigation.navigate('register')}
-          handleToLoading={()=>props.navigation.navigate('loading')}
-          handleToHome={()=>props.navigation.navigate('home')}/>
+        <Login handleToRegister={()=>props.navigation.navigate('register')}/>
       </View>
       <View style={{flex:1}}></View>
     </View>

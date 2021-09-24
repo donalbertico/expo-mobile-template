@@ -22,40 +22,48 @@ export default function EditScreen(props){
   handleEdit = ()=> {
     setLoading(true)
     let ref = db.collection('users').doc(user.uid)
-    ref.set({name : name})
+    const authUser = firebase.auth().currentUser
+    let newInfo = {description : 'emptsss'}
+    ref.set(newInfo)
       .then(()=>{
-        let update = {
-          uid : user.uid,
-          name : name
-        }
-        setUser(update)
-        props.navigation.navigate('home',{userUpdate : true})
-        setLoading(false)
+        authUser.updateProfile({
+              displayName : name
+            })
+            .then(()=>{
+              let update = {
+                displayName : name
+              }
+              setUser(Object.assign(user,update,newInfo))
+              props.navigation.navigate('home',{userUpdate : true})
+              setLoading(false)
+            },(e)=>{
+              console.warn(e)
+              setLoading(false)
+            })
       })
   }
 
   React.useEffect(()=>{
-    setName(user.name)
+    setName(user.displayName)
   },[user])
 
   return(
     <View style={styles.container}>
+      <View style={{flex:1}}></View>
       {!loading? (
-          <>
+          <View style={{flex:2},styles.horizontalView}>
             <View style={{flex:1}}></View>
-            <View style={{flex:2},styles.horizontalView}>
-              <View style={{flex:1}}></View>
-              <View style={{flex:4}}>
-                <Input placeholder='name' value={name} onChangeText={(name)=>setName(name)}></Input>
-                <Button title='edit' onPress={handleEdit}/>
-              </View>
-              <View style={{flex:1}}></View>
+            <View style={{flex:4}}>
+              <Text>{user.uid}</Text>
+              <Input placeholder='name' value={name} onChangeText={(name)=>setName(name)}></Input>
+              <Button title='edit' onPress={handleEdit}/>
             </View>
-            <View style={{flex:3}}></View>
-          </>
+            <View style={{flex:1}}></View>
+          </View>
       ):(
         <ActivityIndicator />
       )}
+      <View style={{flex:3}}></View>
     </View>
   )
 }

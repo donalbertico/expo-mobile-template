@@ -14,9 +14,12 @@ export default function HomeScreen(props){
   const [user,setUser] = useUserRead('get');
 
   React.useEffect(()=>{
-    console.log('pegando y haciendo');
     if(props.route.params?.userUpdate)setUser('get')
   },[props.route.params])
+
+  React.useEffect(()=>{
+    if(user == 'get' || user.destroyed){setUser('get')}
+  },[user])
 
   return(
     <View style={styles.container}>
@@ -31,7 +34,7 @@ export default function HomeScreen(props){
         <TouchableOpacity onPress={()=>props.navigation.navigate('login')}>
           <Text>Wellcome to your app</Text>
           {user? (
-            <Text>{user.name}</Text>
+            <Text>{user.displayName}</Text>
           ):(
             <Text></Text>
           )}
@@ -42,7 +45,7 @@ export default function HomeScreen(props){
         {user.uid? (
           <View>
             <Text>looged!</Text>
-            <Logout handleLogout={()=>{props.navigation.navigate('wellcome')}}/>
+            <Logout/>
           </View>
         ) : (
             <Text>no logged </Text>

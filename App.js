@@ -21,12 +21,19 @@ const Stack = createStackNavigator();
 
 export default function App(props) {
   const [auth] = useCachedResources()
+  const [showApp, setShowApp] = React.useState(false)
+
+  React.useEffect(()=>{
+    if(auth == true) setShowApp(true)
+    if(!auth) setShowApp(false)
+  },[auth])
 
   return (
     <ThemeProvider theme={theme}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='home' screenOptions={{headerShown:false}}>
-          {auth? (
+        <Stack.Navigator screenOptions={{headerShown:false}}>
+
+          {showApp? (
             <>
               <Stack.Screen name='home' component={HomeScreen}/>
               <Stack.Screen name='edit' component={EditScreen}/>
@@ -34,11 +41,13 @@ export default function App(props) {
           ) : (
             <>
               <Stack.Screen name='wellcome' component={WellcomeScreen}/>
-              <Stack.Screen name='loading' component={LoadingScreen}/>
-              <Stack.Screen name='login' component={LoginScreen}/>
               <Stack.Screen name='register' component={RegisterScreen}/>
+              <Stack.Screen name='login' component={LoginScreen}/>
+              <Stack.Screen name='loading' component={LoadingScreen}/>
             </>
           )}
+
+
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
