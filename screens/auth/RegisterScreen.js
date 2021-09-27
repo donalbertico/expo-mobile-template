@@ -6,8 +6,6 @@ import {View, ActivityIndicator} from 'react-native'
 import { Input, Text , Button} from 'react-native-elements'
 import {styles} from '../styles'
 
-import useUserStore from '../../hooks/useUserStore'
-
 export default function RegisterScreen(props){
   const db = firebase.firestore();
 
@@ -17,13 +15,13 @@ export default function RegisterScreen(props){
   const [repeat,setRepeat] = React.useState('')
   const [name,setName] = React.useState('')
   const [loading,setLoading] = React.useState(false)
-  const [setUser] = useUserStore()
+
 
   handleRegister = ()=> {
 
     if(password != repeat){
       setError('passwords must match')
-      // return;
+      return;
     }
     setLoading(true)
     const user = {
@@ -64,13 +62,19 @@ export default function RegisterScreen(props){
     <View style={styles.container}>
       <View style={{flex:1}}></View>
       {!loading? (
-        <View style={styles.alignCentered,{flex:2}}>
-          <Text>{error}</Text>
-          <Input placeholder='name'onChangeText={(name)=>setName(name)}></Input>
-          <Input placeholder='email'onChangeText={(email)=>setEmail(email)}></Input>
-          <Input placeholder='password' value={password} onChangeText={(password)=>setPass(password)}></Input>
-          <Input placeholder='repeat password' value={repeat} onChangeText={(repeat)=>setRepeat(repeat)}></Input>
-          <Button title='register'onPress={handleRegister}/>
+        <View style={{flex:5}}>
+          <View style={styles.horizontalView}>
+            <View style={{flex:1}}></View>
+            <View style={{flex:6}}>
+              <Text>{error}</Text>
+              <Input placeholder='name'onChangeText={(name)=>setName(name)}></Input>
+              <Input placeholder='email'onChangeText={(email)=>setEmail(email)}></Input>
+              <Input placeholder='password' value={password} onChangeText={(password)=>setPass(password)}></Input>
+              <Input placeholder='repeat password' value={repeat} onChangeText={(repeat)=>setRepeat(repeat)}></Input>
+              <Button title='register'onPress={handleRegister}/>
+            </View>
+            <View style={{flex:1}}></View>
+          </View>
         </View>
       ):(
         <ActivityIndicator />

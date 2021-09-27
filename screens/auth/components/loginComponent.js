@@ -6,7 +6,7 @@ import {Input,Text,Button} from 'react-native-elements'
 import {View, TouchableOpacity,ActivityIndicator} from 'react-native'
 
 
-export default function Login({handleToRegister}) {
+export default function Login({handleToRegister,handleRecoverPassword}) {
 
   const [email, setEmail] = React.useState('')
   const [password, setPass] = React.useState('')
@@ -25,30 +25,35 @@ export default function Login({handleToRegister}) {
           console.warn(e);
           setError(e.message)
           setLoading(false)
-
         })
   }
 
-
     return (
-      <View style={styles.horizontalView}>
-        <View style={{flex:1}}></View>
-        {loading?(
-          <ActivityIndicator/>
-        ):(
-          <View style={{flex:5}}>
-            <Text>{error}</Text>
-            <Input placeholder = 'Email' value={email} onChangeText={email => setEmail(email)}/>
-            <Input placeholder = 'Password' value={password} onChangeText={password => setPass(password)}/>
-            <View style={styles.horizontal}>
+      <View>
+          {loading?(
+            <ActivityIndicator/>
+          ):(
+            <>
+              <Text>{error}</Text>
+              <Input placeholder = 'Email' value={email} onChangeText={email => setEmail(email)}/>
+              <Input placeholder = 'Password' value={password} onChangeText={password => setPass(password)}/>
               <Button title='login' onPress={handleLogin}/>
-              <TouchableOpacity onPress={()=>handleToRegister()}>
-                <Text>register</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        <View style={{flex:1}}></View>
+              <View style={styles.horizontalView}>
+                <View style={{flex:1}}></View>
+                <TouchableOpacity onPress={()=>handleRecoverPassword()}>
+                  <Text style={{marginTop:10}}>forgot my password</Text>
+                </TouchableOpacity>
+              </View>
+             <View style={styles.topMarginCentered}>
+                <Text>Or</Text>
+              </View>
+              <View style={styles.topMarginCentered}>
+                  <TouchableOpacity onPress={()=>handleToRegister()}>
+                    <Text h4>Register</Text>
+                  </TouchableOpacity>
+              </View>
+            </>
+          )}
       </View>
     )
 

@@ -14,6 +14,7 @@ import RegisterScreen from './screens/auth/RegisterScreen.js'
 import HomeScreen from './screens/HomeScreen.js'
 import WellcomeScreen from './screens/WellcomeScreen.js'
 import LoadingScreen from './screens/LoadingScreen.js'
+import PasswordScreen from './screens/auth/PasswordScreen.js'
 import Logout from './screens/auth/components/logoutComponent'
 
 const Stack = createStackNavigator();
@@ -32,7 +33,6 @@ export default function App(props) {
     <ThemeProvider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown:false}}>
-
           {showApp? (
             <>
               <Stack.Screen name='home' component={HomeScreen}/>
@@ -46,8 +46,7 @@ export default function App(props) {
               <Stack.Screen name='loading' component={LoadingScreen}/>
             </>
           )}
-
-
+          <Stack.Screen name='password' component={PasswordScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>

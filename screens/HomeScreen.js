@@ -45,11 +45,11 @@ export default function HomeScreen(props){
         {user.uid? (
           <View>
             <Text>looged!</Text>
-            <Logout/>
           </View>
         ) : (
             <Text>no logged </Text>
         )}
+        <Logout/>
       </View>
     </View>
   )

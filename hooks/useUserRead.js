@@ -7,8 +7,8 @@ export default function useUserRead(val){
   React.useEffect(()=>{
     async function getUser(){
       try {
-        let val = await AsyncStorage.getItem('user')
-        if (val != null) setUser(JSON.parse(val))
+        let data = await AsyncStorage.getItem('user')
+        if (data != null)setUser(JSON.parse(data))
       } catch (e) {
         console.warn('ERROR : retraving user',e);
         setUser(null)

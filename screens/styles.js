@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     justifyContent : 'center',
     flex:1
+  },
+  topMarginCentered:{
+    marginTop : 20,
+    alignItems : 'center'
   }
 })
 

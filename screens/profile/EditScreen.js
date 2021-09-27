@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as firebase from 'firebase'
 import 'firebase/firestore'
 
-import {View,ActivityIndicator} from 'react-native'
+import {View,ActivityIndicator,TouchableOpacity} from 'react-native'
 import {Input,Text,Button} from 'react-native-elements'
 import {styles} from '../styles'
 
@@ -54,7 +54,12 @@ export default function EditScreen(props){
           <View style={{flex:2},styles.horizontalView}>
             <View style={{flex:1}}></View>
             <View style={{flex:4}}>
-              <Text>{user.uid}</Text>
+              <View style={styles.horizontalView}>
+                <View style={{flex:1,marginBottom:50}}></View>
+                <TouchableOpacity onPress={()=>{props.navigation.navigate('password',{change:true})}}>
+                  <Text>Change password</Text>
+                </TouchableOpacity>
+              </View>
               <Input placeholder='name' value={name} onChangeText={(name)=>setName(name)}></Input>
               <Button title='edit' onPress={handleEdit}/>
             </View>

@@ -13,7 +13,14 @@ export default function LoginScreen(props){
     <View style={styles.container}>
       <View style={{flex:1}}></View>
       <View style={{flex:2}}>
-        <Login handleToRegister={()=>props.navigation.navigate('register')}/>
+        <View style={styles.horizontalView}>
+          <View style={{flex:1}}></View>
+          <View style={{flex:6}}>
+            <Login handleToRegister={()=>props.navigation.navigate('register')}
+                handleRecoverPassword={()=>props.navigation.navigate('password')}/>
+          </View>
+          <View style={{flex:1}}></View>
+        </View>
       </View>
       <View style={{flex:1}}></View>
     </View>

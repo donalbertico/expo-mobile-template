@@ -1,7 +1,7 @@
 import * as React from 'react';
+import * as SplashScreen from 'expo-splash-screen'
 import * as firebase from 'firebase'
 import 'firebase/firestore'
-
 import apiKeys from '../constants/apiKeys.js'
 import useUserRead from './useUserRead'
 import useUserStore from './useUserStore'
@@ -16,6 +16,7 @@ export default function useCachedResources(){
   React.useEffect(()=>{
     async function loadResourcesAndDataAsync(){
       try {
+        SplashScreen.preventAutoHideAsync();
         firebase.initializeApp(apiKeys.firebase)
         firebase.auth().onAuthStateChanged((authUser)=>{
           if(authUser){
@@ -28,6 +29,7 @@ export default function useCachedResources(){
               displayName:authUser.displayName})
             setAuth(true)
           }else{
+            setIsNew(false)
             setAuth(false)
           }
         })
@@ -39,7 +41,8 @@ export default function useCachedResources(){
   }, []);
 
   React.useEffect(()=>{
-    if(auth==true&&!user.uid){
+    if(auth==true&&user!='get'){
+      if(user.uid)return SplashScreen.hideAsync();
       if(!isNew){
         let db = firebase.firestore()
         let userRef = db.collection('users')
@@ -48,14 +51,15 @@ export default function useCachedResources(){
               let newInfo =  Object.assign({},userInfo,{description:doc.description})
               setUserInfo(newInfo)
               setUser(userInfo)
+              SplashScreen.hideAsync()
             })
       }
-
     }else if (!auth) {
       setUser({destroyed : true})
-      console.log('deleting');
+      SplashScreen.hideAsync()
     }
   },[user,auth])
+
 
   return [auth]
 }
