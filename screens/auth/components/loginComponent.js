@@ -36,7 +36,7 @@ export default function Login({handleToRegister,handleRecoverPassword}) {
             <>
               <Text>{error}</Text>
               <Input placeholder = 'Email' value={email} onChangeText={email => setEmail(email)}/>
-              <Input placeholder = 'Password' value={password} onChangeText={password => setPass(password)}/>
+              <Input placeholder = 'Password' value={password} secureTextEntry={true} onChangeText={password => setPass(password)}/>
               <Button title='login' onPress={handleLogin}/>
               <View style={styles.horizontalView}>
                 <View style={{flex:1}}></View>

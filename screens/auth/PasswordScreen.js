@@ -73,8 +73,8 @@ export default function PasswordScreen(props){
               ):(change? (
                 <View>
                   <Input placeholder='current' value={current} onChangeText={(current)=>setCurrent(current)}></Input>
-                  <Input placeholder='password' value={password} onChangeText={(password)=>setPass(password)}></Input>
-                  <Input placeholder='repeat password' value={repeat} onChangeText={(repeat)=>setRepeat(repeat)}></Input>
+                  <Input placeholder='password' value={password} secureTextEntry={true} onChangeText={(password)=>setPass(password)}></Input>
+                  <Input placeholder='repeat password' value={repeat} secureTextEntry={true} onChangeText={(repeat)=>setRepeat(repeat)}></Input>
                   <Button title='change password' onPress={handleReset}/>
                 </View>
               ):(

@@ -10,7 +10,7 @@ export default function useCachedResources(){
   const [auth, setAuth] = React.useState('toLoad')
   const [userInfo,setUserInfo] = React.useState({})
   const [setUser] = useUserStore()
-  const [user] = useUserRead('get')
+  const [user,readUser] = useUserRead('get')
   const [isNew,setIsNew] = React.useState(false)
 
   React.useEffect(()=>{
@@ -19,18 +19,21 @@ export default function useCachedResources(){
         SplashScreen.preventAutoHideAsync();
         firebase.initializeApp(apiKeys.firebase)
         firebase.auth().onAuthStateChanged((authUser)=>{
+          readUser('get')
           if(authUser){
-            if(authUser.metadata.creationTime == authUser.metadata.lastSignInTime){
-              setIsNew(true)
-            }
             setUserInfo({
               uid:authUser.uid,
               email:authUser.email,
               displayName:authUser.displayName})
+            if(authUser.metadata.creationTime == authUser.metadata.lastSignInTime){
+              setIsNew(true)
+            }
             setAuth(true)
           }else{
             setIsNew(false)
             setAuth(false)
+            setUser({destroyed :true})
+            SplashScreen.hideAsync()
           }
         })
       } catch (err) {
@@ -42,21 +45,22 @@ export default function useCachedResources(){
 
   React.useEffect(()=>{
     if(auth==true&&user!='get'){
-      if(user.uid)return SplashScreen.hideAsync();
+      if(user.uid){
+        SplashScreen.hideAsync();
+        return;
+      }
       if(!isNew){
         let db = firebase.firestore()
         let userRef = db.collection('users')
         userRef.doc(userInfo.uid).get()
             .then((doc)=>{
-              let newInfo =  Object.assign({},userInfo,{description:doc.description})
+              let newInfo = userInfo;
+              newInfo.description = doc.data().description
               setUserInfo(newInfo)
               setUser(userInfo)
               SplashScreen.hideAsync()
             })
       }
-    }else if (!auth) {
-      setUser({destroyed : true})
-      SplashScreen.hideAsync()
     }
   },[user,auth])
 

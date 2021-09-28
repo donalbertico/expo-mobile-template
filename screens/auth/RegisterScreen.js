@@ -6,6 +6,8 @@ import {View, ActivityIndicator} from 'react-native'
 import { Input, Text , Button} from 'react-native-elements'
 import {styles} from '../styles'
 
+import useUserStore from '../../hooks/useUserStore'
+
 export default function RegisterScreen(props){
   const db = firebase.firestore();
 
@@ -15,6 +17,7 @@ export default function RegisterScreen(props){
   const [repeat,setRepeat] = React.useState('')
   const [name,setName] = React.useState('')
   const [loading,setLoading] = React.useState(false)
+  const [setUser] = useUserStore()
 
 
   handleRegister = ()=> {
@@ -69,8 +72,8 @@ export default function RegisterScreen(props){
               <Text>{error}</Text>
               <Input placeholder='name'onChangeText={(name)=>setName(name)}></Input>
               <Input placeholder='email'onChangeText={(email)=>setEmail(email)}></Input>
-              <Input placeholder='password' value={password} onChangeText={(password)=>setPass(password)}></Input>
-              <Input placeholder='repeat password' value={repeat} onChangeText={(repeat)=>setRepeat(repeat)}></Input>
+              <Input placeholder='password' value={password} secureTextEntry={true} onChangeText={(password)=>setPass(password)}></Input>
+              <Input placeholder='repeat password' value={repeat} secureTextEntry={true} onChangeText={(repeat)=>setRepeat(repeat)}></Input>
               <Button title='register'onPress={handleRegister}/>
             </View>
             <View style={{flex:1}}></View>

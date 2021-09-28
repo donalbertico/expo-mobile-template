@@ -40,9 +40,9 @@ export default function App(props) {
             </>
           ) : (
             <>
+              <Stack.Screen name='login' component={LoginScreen}/>
               <Stack.Screen name='wellcome' component={WellcomeScreen}/>
               <Stack.Screen name='register' component={RegisterScreen}/>
-              <Stack.Screen name='login' component={LoginScreen}/>
               <Stack.Screen name='loading' component={LoadingScreen}/>
             </>
           )}

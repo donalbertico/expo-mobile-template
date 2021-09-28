@@ -13,7 +13,6 @@ export default function EditScreen(props){
   const db = firebase.firestore();
 
   const [email,setEmail] = React.useState('')
-  const [password,setPass] = React.useState('')
   const [name,setName] = React.useState('')
   const [loading,setLoading] = React.useState(false)
   const [user] = useUserRead('get')
@@ -23,7 +22,7 @@ export default function EditScreen(props){
     setLoading(true)
     let ref = db.collection('users').doc(user.uid)
     const authUser = firebase.auth().currentUser
-    let newInfo = {description : 'emptsss'}
+    let newInfo = {description : 'ploplo'}
     ref.set(newInfo)
       .then(()=>{
         authUser.updateProfile({

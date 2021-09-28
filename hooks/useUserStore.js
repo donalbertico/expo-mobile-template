@@ -17,7 +17,7 @@ export default function useUserStore(val){
       storeUser()
       console.log('storing');
     }
-  });
+  },[user]);
 
   return [setUser]
 }
