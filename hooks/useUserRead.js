@@ -8,7 +8,8 @@ export default function useUserRead(val){
     async function getUser(){
       try {
         let data = await AsyncStorage.getItem('user')
-        if (data != null)setUser(JSON.parse(data))
+        if (data != null){setUser(JSON.parse(data))}
+        else {setUser({destroyed:true})}
       } catch (e) {
         console.warn('ERROR : retraving user',e);
         setUser(null)
