@@ -1,12 +1,9 @@
 import * as React from 'react'
 import * as firebase from 'firebase'
 import 'firebase/firestore'
-
 import {View, ActivityIndicator} from 'react-native'
 import { Input, Text , Button} from 'react-native-elements'
 import {styles} from '../styles'
-
-import useUserStore from '../../hooks/useUserStore'
 
 export default function RegisterScreen(props){
   const db = firebase.firestore();
@@ -17,36 +14,27 @@ export default function RegisterScreen(props){
   const [repeat,setRepeat] = React.useState('')
   const [name,setName] = React.useState('')
   const [loading,setLoading] = React.useState(false)
-  const [setUser] = useUserStore()
-
 
   handleRegister = ()=> {
-
     if(password != repeat){
       setError('passwords must match')
       return;
     }
     setLoading(true)
-    const user = {
-      uid : '00cheat00',
-      email : email,
-      displayName : name,
-      description : 'provisional'
-    }
     firebase
         .auth()
         .createUserWithEmailAndPassword(email,password)
         .then(credentials => {
-          user.uid = credentials.user.uid
           credentials.user.updateProfile({
                 displayName : name
               })
               .then(()=>{
-                db.collection('users').doc(user.uid).set({
-                      description:'empty'
+                db.collection('users').doc(credentials.user.uid).set({
+                      firstName : name,
+                      lastName : name,
+                      email : email
                     })
                     .then(()=>{
-                      setUser(user)
                       setLoading(false)
                     })
                   })

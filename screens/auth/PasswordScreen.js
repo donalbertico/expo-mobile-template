@@ -14,6 +14,7 @@ export default function PasswordScreen(props){
   const [repeat,setRepeat] = React.useState('')
   const [loading,setLoading] = React.useState(false)
   const [msg,setMsg] = React.useState('')
+  const [state, dispatch] = React.useReducer(reducer, { info : {}})
 
   handleSendMail = () => {
     setLoading(true)

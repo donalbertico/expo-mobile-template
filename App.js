@@ -9,25 +9,24 @@ import {theme} from './screens/styles'
 
 import useCachedResources from './hooks/useCachedResources'
 import LoginScreen from './screens/auth/LoginScreen.js'
-import EditScreen from './screens/profile/EditScreen.js'
 import RegisterScreen from './screens/auth/RegisterScreen.js'
-import HomeScreen from './screens/HomeScreen.js'
+import MainScreen from './screens/MainScreen.js'
 import WellcomeScreen from './screens/WellcomeScreen.js'
 import LoadingScreen from './screens/LoadingScreen.js'
 import PasswordScreen from './screens/auth/PasswordScreen.js'
 import Logout from './screens/auth/components/logoutComponent'
 
+
 const Stack = createStackNavigator();
 
-
 export default function App(props) {
-  const [auth] = useCachedResources()
+  const [auth, user] = useCachedResources()
   const [showApp, setShowApp] = React.useState(false)
 
   React.useEffect(()=>{
-    if(auth == true) setShowApp(true)
+    if(auth == true && user?.uid) setShowApp(true)
     if(!auth) setShowApp(false)
-  },[auth])
+  },[auth, user])
 
   return (
     <ThemeProvider theme={theme}>
@@ -35,8 +34,9 @@ export default function App(props) {
         <Stack.Navigator screenOptions={{headerShown:false}}>
           {showApp? (
             <>
-              <Stack.Screen name='home' component={HomeScreen}/>
-              <Stack.Screen name='edit' component={EditScreen}/>
+              <Stack.Screen name='main'>
+                {props => <MainScreen {...props} user={user}/>}
+              </Stack.Screen>
             </>
           ) : (
             <>

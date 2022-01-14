@@ -3,15 +3,13 @@ import * as SplashScreen from 'expo-splash-screen'
 import * as firebase from 'firebase'
 import 'firebase/firestore'
 import apiKeys from '../constants/apiKeys.js'
-import useUserRead from './useUserRead'
-import useUserStore from './useUserStore'
 
 export default function useCachedResources(){
   const [auth, setAuth] = React.useState('toLoad')
   const [userInfo,setUserInfo] = React.useState({})
-  const [setUser] = useUserStore()
-  const [user,readUser] = useUserRead('get')
+  const [user,setUser] = React.useState()
   const [isNew,setIsNew] = React.useState(false)
+  const [authUid, setUid] = React.useState()
 
   React.useEffect(()=>{
     async function loadResourcesAndDataAsync(){
@@ -19,20 +17,11 @@ export default function useCachedResources(){
         SplashScreen.preventAutoHideAsync();
         firebase.initializeApp(apiKeys.firebase)
         firebase.auth().onAuthStateChanged((authUser)=>{
-          readUser('get')
           if(authUser){
-            setUserInfo({
-              uid:authUser.uid,
-              email:authUser.email,
-              displayName:authUser.displayName})
-            if(authUser.metadata.creationTime == authUser.metadata.lastSignInTime){
-              setIsNew(true)
-            }
-            setAuth(true)
+            setUid(authUser.uid)
           }else{
-            setIsNew(false)
             setAuth(false)
-            setUser({destroyed :true})
+            setUid(false)
             SplashScreen.hideAsync()
           }
         })
@@ -43,27 +32,33 @@ export default function useCachedResources(){
     loadResourcesAndDataAsync();
   }, []);
 
-  React.useEffect(()=>{
-    if(auth==true&&user!='get'){
-      if(user.uid){
-        SplashScreen.hideAsync();
-        return;
-      }
-      if(!isNew){
-        let db = firebase.firestore()
-        let userRef = db.collection('users')
-        userRef.doc(userInfo.uid).get()
-            .then((doc)=>{
-              let newInfo = userInfo;
-              newInfo.description = doc.data().description
-              setUserInfo(newInfo)
+  React.useEffect(() => {
+    if(authUid) {
+      let db = firebase.firestore()
+      let userRef = db.collection('users')
+      userRef.doc(authUid).get()
+          .then((doc)=>{
+            console.log('1er ???',doc.id);
+            if(doc?.data().email){
+              let userInfo = {uid : doc.id, ...doc.data()};
               setUser(userInfo)
+              setAuth(true)
               SplashScreen.hideAsync()
-            })
-      }
+            }else{
+              userRef.doc(authUid).get()
+                  .then((doc)=>{
+                    console.log('2 ddd ???',doc.id);
+                    if(doc?.data().email){
+                      let userInfo = {uid : doc.id, ...doc.data()};
+                      setUser(userInfo)
+                      setAuth(true)
+                      SplashScreen.hideAsync()
+                    }
+                  })
+            }
+          })
     }
-  },[user,auth])
+  }, [authUid])
 
-
-  return [auth]
+  return [auth, user]
 }

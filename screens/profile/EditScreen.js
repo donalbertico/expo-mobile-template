@@ -6,44 +6,37 @@ import {View,ActivityIndicator,TouchableOpacity} from 'react-native'
 import {Input,Text,Button} from 'react-native-elements'
 import {styles} from '../styles'
 
-import useUserStore from '../../hooks/useUserStore'
-import useUserRead from '../../hooks/useUserRead'
+import {UserProvider, useUser} from '../../context/user-context'
 
 export default function EditScreen(props){
   const db = firebase.firestore();
 
   const [email,setEmail] = React.useState('')
   const [name,setName] = React.useState('')
+  const [lastName,setLastName] = React.useState('')
   const [loading,setLoading] = React.useState(false)
-  const [user] = useUserRead('get')
-  const [setUser] = useUserStore()
+  const [user, setUser] = useUser()
 
   handleEdit = ()=> {
     setLoading(true)
     let ref = db.collection('users').doc(user.uid)
     const authUser = firebase.auth().currentUser
-    let newInfo = {description : 'ploplo'}
-    ref.set(newInfo)
+    let newInfo = {firstName : name, lastName : lastName}
+    ref.update(newInfo)
       .then(()=>{
-        authUser.updateProfile({
-              displayName : name
-            })
-            .then(()=>{
-              let update = {
-                displayName : name
-              }
-              setUser(Object.assign(user,update,newInfo))
-              props.navigation.navigate('home',{userUpdate : true})
-              setLoading(false)
-            },(e)=>{
-              console.warn(e)
-              setLoading(false)
-            })
+        setUser({...user, ...newInfo})
+        props.navigation.navigate('main', {screen : 'home'})
+        setLoading(false)
+      })
+      .catch( (e) => {
+        console.log(e);
+        setLoading(false)
       })
   }
 
   React.useEffect(()=>{
-    setName(user.displayName)
+    setName(user.firstName)
+    setLastName(user.lastName)
   },[user])
 
   return(
@@ -60,6 +53,7 @@ export default function EditScreen(props){
                 </TouchableOpacity>
               </View>
               <Input placeholder='name' value={name} onChangeText={(name)=>setName(name)}></Input>
+              <Input placeholder='last name' value={lastName} onChangeText={(lastName)=>setLastName(lastName)}></Input>
               <Button title='edit' onPress={handleEdit}/>
             </View>
             <View style={{flex:1}}></View>
