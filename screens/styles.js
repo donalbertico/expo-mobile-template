@@ -28,7 +28,11 @@ const styles = StyleSheet.create({
   topMarginCentered:{
     marginTop : 20,
     alignItems : 'center'
-  }
+  },
+  authProviders:{
+    height:30,
+    width:30
+  },
 })
 
 

@@ -1,13 +1,12 @@
 import * as React from 'react'
 import * as firebase from 'firebase'
 import 'firebase/firestore'
-import {View, ActivityIndicator} from 'react-native'
-import { Input, Text , Button} from 'react-native-elements'
-import {styles} from '../styles'
+import { View, ActivityIndicator } from 'react-native'
+import { Input, Text , Button, Image } from 'react-native-elements'
+import { styles } from '../styles'
 
 export default function RegisterScreen(props){
   const db = firebase.firestore();
-
   const [email,setEmail] = React.useState('')
   const [error,setError] = React.useState('')
   const [password,setPass] = React.useState('')
